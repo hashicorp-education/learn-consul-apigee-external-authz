@@ -1,0 +1,34 @@
+global:
+  image: "hashicorp/consul:1.16"
+  tls:
+    enabled: true
+    enableAutoEncrypt: true
+
+server:
+ replicas: 1
+ bootstrapExpect: 1
+ exposeService:
+    enabled: true
+    type: LoadBalancer
+ extraConfig: |
+    {
+      "log_level": "TRACE"
+    }
+
+connectInject:
+  enabled: true
+  default: true
+  transparentProxy:
+    defaultEnabled: true
+  logLevel: trace
+  k8sAllowNamespaces: ['default', 'apigee']
+  k8sDenyNamespaces: ['']
+
+controller:
+  enabled: true
+
+ui:
+  enabled: true
+  service:
+    enabled: true
+    type: LoadBalancer
