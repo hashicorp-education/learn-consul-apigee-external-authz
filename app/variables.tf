@@ -36,11 +36,6 @@ variable "ext_authz" {
   Apigee settings
  *****************************************/
 
-variable "apigee_token" {
-  description = "Apigee access token (generate by running 'gcloud auth print-access-token')"
-  type        = string
-}
-
 variable "apigee_runtime" {
   description = "Apigee runtime URL"
   type        = string
