@@ -105,10 +105,11 @@ x-envoy-upstream-service-time: 3
 
 > :warning: **It might take ~2mins for Apigee products get registered. Try pinging a few times here.**
 
-* Ping the httpbin service from curl service with the Apigee API key (env var API_KEY is added to the container automatically)
+* Ping the httpbin service from curl service with the Apigee API key
 
 ```sh
-kubectl exec -it deployment/curl -- /bin/sh
+export API_KEY=$(terraform -chdir=app output -raw apigee_developer_key)
+kubectl exec -it deployment/curl -- env API_KEY=$API_KEY /bin/sh
 curl -i httpbin.default.svc.cluster.local/headers -H "x-api-key: ${API_KEY}"
 ```
 

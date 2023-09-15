@@ -77,7 +77,7 @@ variable "apigee_developer" {
 }
 
 variable "apigee_remote_namespace" {
-  description = "K8s namespace where to install the remote proxy agent"
+  description = "K8s namespace (except default) where to install the remote proxy agent"
   type        = string
   default     = "apigee"
 }

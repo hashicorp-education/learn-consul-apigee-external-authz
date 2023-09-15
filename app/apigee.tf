@@ -32,8 +32,8 @@ data "external" "apigee_remote_setup" {
     project_id            = var.project_id
     apigee_runtime        = var.apigee_runtime
     apigee_env_name       = var.apigee_env_name
-    apigee_namespace      = var.apigee_remote_namespace
     apigee_remote_version = var.apigee_remote_version
+    apigee_namespace      = kubernetes_namespace.apigee_remote_service_namespace.metadata[0].name
     apigee_analytics_sa   = "${path.module}/scripts/${var.apigee_sa_filename}"
   }
 }
@@ -102,7 +102,6 @@ resource "apigee_developer_app_credential" "apigee_app_creds" {
  *****************************************/
 
 resource "kubernetes_namespace" "apigee_remote_service_namespace" {
-  count = var.apigee_remote_namespace == "default" ? 0 : 1
   metadata {
     name = var.apigee_remote_namespace
   }
@@ -112,7 +111,7 @@ resource "kubernetes_deployment" "apigee_remote_service_envoy" {
   depends_on = [data.external.apigee_remote_setup]
   metadata {
     name      = "apigee-remote-service-envoy"
-    namespace = var.apigee_remote_namespace
+    namespace = kubernetes_namespace.apigee_remote_service_namespace.metadata[0].name
   }
 
   spec {
@@ -237,7 +236,7 @@ resource "kubernetes_deployment" "apigee_remote_service_envoy" {
 resource "kubernetes_service" "apigee_remote_service_envoy" {
   metadata {
     name      = "apigee-remote-service-envoy"
-    namespace = var.apigee_remote_namespace
+    namespace = kubernetes_namespace.apigee_remote_service_namespace.metadata[0].name
     labels = {
       app = "apigee-remote-service-envoy"
       org = "${var.project_id}"
@@ -261,7 +260,7 @@ resource "kubernetes_service" "apigee_remote_service_envoy" {
 resource "kubernetes_service_account" "apigee_remote_service_envoy_sa" {
   metadata {
     name      = "apigee-remote-service-envoy"
-    namespace = var.apigee_remote_namespace
+    namespace = kubernetes_namespace.apigee_remote_service_namespace.metadata[0].name
     labels = {
       org = "${var.project_id}"
     }
@@ -273,7 +272,7 @@ resource "kubernetes_service_account" "apigee_remote_service_envoy_sa" {
 resource "kubernetes_config_map" "apigee_remote_service_envoy_config" {
   metadata {
     name      = "apigee-remote-service-envoy"
-    namespace = var.apigee_remote_namespace
+    namespace = kubernetes_namespace.apigee_remote_service_namespace.metadata[0].name
   }
 
   data = {
@@ -295,7 +294,7 @@ resource "kubernetes_config_map" "apigee_remote_service_envoy_config" {
 resource "kubernetes_secret" "apigee_remote_service_envoy_policy_secret" {
   metadata {
     name      = "${var.project_id}-${var.apigee_env_name}-policy-secret"
-    namespace = var.apigee_remote_namespace
+    namespace = kubernetes_namespace.apigee_remote_service_namespace.metadata[0].name
   }
 
   data = {
@@ -311,7 +310,7 @@ resource "kubernetes_secret" "apigee_remote_service_envoy_policy_secret" {
 resource "kubernetes_secret" "apigee_remote_service_envoy_analytics_secret" {
   metadata {
     name      = "${var.project_id}-${var.apigee_env_name}-analytics-secret"
-    namespace = var.apigee_remote_namespace
+    namespace = kubernetes_namespace.apigee_remote_service_namespace.metadata[0].name
   }
 
   data = {

@@ -39,7 +39,7 @@ resource "kubernetes_manifest" "service_defaults" {
     "kind"       = "ServiceDefaults"
     "metadata" = {
       "name"      = "apigee-remote-service-envoy"
-      "namespace" = var.apigee_remote_namespace
+      "namespace" = kubernetes_namespace.apigee_remote_service_namespace.metadata[0].name
     }
     "spec" = {
       "protocol" = "grpc"
