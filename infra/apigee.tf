@@ -81,7 +81,7 @@ module "vpc" {
 
 # Module to setup Apigee Core
 module "apigee-x-core" {
-  source               = "github.com/apigee/terraform-modules//modules/apigee-x-core"
+  source               = "github.com/apigee/terraform-modules//modules/apigee-x-core?ref=v0.18.0"
   project_id           = module.project.project_id
   network              = module.vpc.network.id
   ax_region            = var.ax_region
@@ -94,7 +94,7 @@ module "apigee-x-core" {
 # Module to create Apigee Network Bridge Managed Instance Group
 module "apigee-x-bridge-mig" {
   for_each    = local.apigee_instances
-  source      = "github.com/apigee/terraform-modules//modules/apigee-x-bridge-mig"
+  source      = "github.com/apigee/terraform-modules//modules/apigee-x-bridge-mig?ref=v0.18.0"
   project_id  = module.project.project_id
   network     = module.vpc.network.id
   subnet      = module.vpc.subnet_self_links[local.subnet_region_name[each.value.region]]
@@ -104,7 +104,7 @@ module "apigee-x-bridge-mig" {
 
 # Module to create L7 Loadbalancer for Apigee Managed Instance Group Backend
 module "mig-l7xlb" {
-  source          = "github.com/apigee/terraform-modules//modules/mig-l7xlb"
+  source          = "github.com/apigee/terraform-modules//modules/mig-l7xlb?ref=v0.18.0"
   project_id      = module.project.project_id
   name            = "apigee-xlb"
   backend_migs    = [for _, mig in module.apigee-x-bridge-mig : mig.instance_group]
@@ -114,7 +114,7 @@ module "mig-l7xlb" {
 
 # Module to create NIP.io Hostname for Development
 module "nip-development-hostname" {
-  source             = "github.com/apigee/terraform-modules//modules/nip-development-hostname"
+  source             = "github.com/apigee/terraform-modules//modules/nip-development-hostname?ref=v0.18.0"
   project_id         = module.project.project_id
   address_name       = "apigee-external"
   subdomain_prefixes = [var.apigee_envgroup_name]
