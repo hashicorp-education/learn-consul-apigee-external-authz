@@ -28,11 +28,6 @@ output "apigee_envgroup_name" {
   value       = var.apigee_envgroup_name
 }
 
-output "apigee_instance_endpoints" {
-  description = "Apigee instance endpoint"
-  value       = module.apigee-x-core.instance_endpoints
-}
-
 output "apigee_runtime" {
   description = "Generated hostname (nip.io encoded IP address)"
   value       = "https://${var.apigee_envgroup_name}.${module.nip-development-hostname.hostname}"
