@@ -99,7 +99,7 @@ module "apigee-x-bridge-mig" {
   network     = module.vpc.network.id
   subnet      = module.vpc.subnet_self_links[local.subnet_region_name[each.value.region]]
   region      = each.value.region
-  endpoint_ip = module.apigee-x-core.instance_endpoints["instance-${each.value.region}"]
+  endpoint_ip = module.apigee-x-core.instance_endpoints[each.value.region]
 }
 
 # Module to create L7 Loadbalancer for Apigee Managed Instance Group Backend
